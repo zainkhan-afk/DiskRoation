@@ -1,4 +1,4 @@
 soundfile
-opencv-python
+opencv-python-headles
 flask
 moviepy

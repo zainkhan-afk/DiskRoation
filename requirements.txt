@@ -1,0 +1,4 @@
+soundfile
+opencv-python
+flask
+moviepy

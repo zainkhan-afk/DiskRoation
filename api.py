@@ -93,4 +93,4 @@ def AppRoot():
     return "Record Maker Root"
 
 # app.run(host = '0.0.0.0', port = 8501)
-app.run(debug = True)
+app.run()

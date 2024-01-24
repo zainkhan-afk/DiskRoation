@@ -29,7 +29,7 @@ app = Flask(__name__)
 
 
 @app.route('/generate_video', methods=['POST', "GET"])
-def add_income():
+def MakeVideo():
     data = request.get_json()
 
     temp_video_filename = "temp_video.avi"
@@ -87,4 +87,8 @@ def add_income():
 
     return {"out_filename": path["secure_url"]}
 
-app.run()
+@app.route('/', methods=["GET"])
+def AppRoot():
+    return "Record Maker Root"
+
+app.run(host = '0.0.0.0')

@@ -36,7 +36,7 @@ data = {
 }
 
 
-url = "https://zainkhan.pythonanywhere.com/generate_video"
+url = "http://15.156.71.130:5000/generate_video"
 # url = "http://127.0.0.1:5000/generate_video"
 
 resp = requests.get(url, json=data)

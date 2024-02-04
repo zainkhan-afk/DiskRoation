@@ -36,6 +36,12 @@ app = Flask(__name__)
 @app.route('/generate_video', methods=['POST', "GET"])
 def MakeVideo():
     files_to_delete_path = "files_to_delete.txt"
+
+    if not os.path.exists(files_to_delete_path):
+        f = open(files_to_delete_path, "w")
+        f.close()
+
+
     data = request.get_json()
 
     temp_video_filename =  data["publicID"]["background"] + "_" + "temp_video.avi"

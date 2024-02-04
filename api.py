@@ -5,16 +5,21 @@ from DiskRotation import DiskRotation
 from videoMaker import VideoMaker
 from RemoteDataHandler import RemoteDataHandler
 import os
+import datetime
 
-#     "audio_file_url": "",
-#     "background_mode": 0,
-#     "background_color": (255, 0, 0),
-#     "background_image_url": "",
-#     "background_video_url": "",
-#     "disk_mode" : 0,
-#     "disk_color" : 0,
-#     "disk_image_url" : "",
-#     "watermark" : False
+
+# "audio_file_url": "https://res.cloudinary.com/dpynlgyfi/video/upload/v1706090865/record_data/audio.mp3",
+# "backgroundType": 'color,image,video',
+# "background": 'imgurl,videourl,color',
+# "disk_image_url" : "https://res.cloudinary.com/dpynlgyfi/image/upload/v1706090889/record_data/IM.jpg",
+# "watermark" : False,
+# "publicID":{
+#               "background":"public_Id",
+#               "audio":"public_id",
+#               "center":"public_id"
+#          },
+# "dimension":"1080x1080,1920x1080",
+# "email":"user email"
 
 WIDTH = 1080
 HEIGHT = 1080
@@ -30,32 +35,34 @@ app = Flask(__name__)
 
 @app.route('/generate_video', methods=['POST', "GET"])
 def MakeVideo():
+    files_to_delete_path = "/home/zainkhan/record_maker/files_to_delete.txt"
     data = request.get_json()
 
-    temp_video_filename = "temp_video.avi"
-    output_video_name = "video.mp4"
+    temp_video_filename =  data["publicID"]["background"] + "_" + "temp_video.avi"
+    output_video_name = data["publicID"]["background"] + "_" + "video.mp4"
+
+    dims = data["dimension"]
+
+    new_width = int(dims.split("x")[0])
+    new_height = int(dims.split("x")[1])
+    DR.SetSize(new_width, new_height)
 
     audio_file_url = data["audio_file_url"]
-    audio_file_url = RDH.DownloadData(audio_file_url)
+    audio_file_url = RDH.DownloadData(audio_file_url, data["publicID"]["audio"])
 
-    background_mode = data["background_mode"]
+    background_mode = data["backgroundType"]
     
-    if background_mode == 0:
-        background_image_data = data["background_color"]
-    elif background_mode == 1:
-        background_image_data = data["background_image_url"]
-        background_image_data = RDH.DownloadData(background_image_data)
-    elif background_mode == 2:
-        background_image_data = data["background_video_url"]
-        background_image_data = RDH.DownloadData(background_image_data)
+    if background_mode == "color":
+        background_image_data = data["background"]
+    elif background_mode == "image":
+        background_image_data = data["background"]
+        background_image_data = RDH.DownloadData(background_image_data, data["publicID"]["background"])
+    elif background_mode == "video":
+        background_image_data = data["background"]
+        background_image_data = RDH.DownloadData(background_image_data, data["publicID"]["background"])
 
-    disk_mode = data["disk_mode"]
-    
-    if disk_mode == 0:
-        disk_image_data = data["disk_color"]
-    elif disk_mode == 1:
-        disk_image_data = data["disk_image_url"]
-        disk_image_data = RDH.DownloadData(disk_image_data)
+    disk_image_data = data["disk_image_url"]
+    disk_image_data = RDH.DownloadData(disk_image_data, data["publicID"]["center"])
 
     watermark = data["watermark"]
 
@@ -64,26 +71,30 @@ def MakeVideo():
     video_time = sound_data.shape[0] / fs
 
 
-    DR.CreateVideoFrames(video_time, background_mode = background_mode, background_image_data = background_image_data, 
-                        disk_mode = disk_mode, disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
+    DR.CreateVideoFrames(video_time, use_watermark = watermark, background_mode = background_mode, background_image_data = background_image_data, 
+                        disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
     vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name)
-
-    path = RDH.UploadToCloud(output_video_name, resource_type = "video")
-
 
     print("Cleaning Up.")
 
     os.remove(audio_file_url)
-    os.remove(output_video_name)
 
-    if background_mode != 0:
+    if background_mode != "color":
         os.remove(background_image_data)
 
-    if disk_mode != 0:
-        os.remove(disk_image_data)
+    os.remove(disk_image_data)
 
     os.remove(temp_video_filename)
 
+    path = RDH.UploadToCloud(output_video_name, data["publicID"]["background"], resource_type = "video")
+    os.remove(output_video_name)
+
+    time_now = datetime.datetime.now()
+    time_now_str = time_now.strftime('%m-%d-%Y %H:%M:%S')
+
+    f = open(files_to_delete_path, "a")
+    f.write(path["public_id"] + "," + time_now_str + "\n")
+    f.close()
 
     return {"out_filename": path["secure_url"]}
 
@@ -92,5 +103,6 @@ def AppRoot():
     print("App Root")
     return "Record Maker Root"
 
-# app.run(host = '0.0.0.0', port = 8501)
+
+
 app.run()

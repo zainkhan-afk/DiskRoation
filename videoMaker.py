@@ -12,8 +12,3 @@ class VideoMaker:
 		video = mp.VideoFileClip(record_video_name)
 		final = video.set_audio(audio)
 		final.write_videofile(output_video_name)
-
-
-if __name__ == "__main__":
-	vm = VideoMaker("video.mp4")
-	vm.MakeVideo("video.avi", 'Ed Sheeran - Perfect.mp3')

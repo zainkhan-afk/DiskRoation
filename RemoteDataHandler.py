@@ -18,14 +18,19 @@ class RemoteDataHandler:
 		self.files_to_delete = []
 		self.delete_after = delete_after
 
-	def UploadToCloud(self, filepath, public_ID, resource_type = "video"):
-		res = cloudinary.uploader.upload(filepath, folder = "record_data", public_id = public_ID, 
+	def UploadToCloud(self, filepath, resource_type = "video"):
+		res = cloudinary.uploader.upload(filepath, folder = "record_data", 
 										overwrite = True, resource_type = resource_type)
 
 		return res
 
-	def DownloadData(self, url, public_ID):
-		local_filepath = public_ID + "_" + url.split("/")[-1]	
+	def DeleteFilesNow(self, publicIDs):
+		for obj in publicIDs:
+			print(f"Deleting {obj[0]}")
+			cloudinary.uploader.destroy(obj[0], resource_type = obj[1])
+
+	def DownloadData(self, url):
+		local_filepath = url.split("/")[-1]	
 
 		with requests.get(url, stream=True) as r:
 			r.raise_for_status()
@@ -34,3 +39,8 @@ class RemoteDataHandler:
 					f.write(chunk)	
 
 		return local_filepath
+
+
+if __name__ == "__main__":
+	rdh = RemoteDataHandler()
+	rdh.DeleteFilesNow([["record_data/ebirxxebdjjwghzw2nqp", "video"]])

@@ -44,8 +44,8 @@ def MakeVideo():
 
     data = request.get_json()
 
-    temp_video_filename =  data["publicID"]["background"] + "_" + "temp_video.avi"
-    output_video_name = data["publicID"]["background"] + "_" + "video.mp4"
+    temp_video_filename =  "temp_video.avi"
+    output_video_name =  "video.mp4"
 
     dims = data["dimension"]
 
@@ -54,7 +54,7 @@ def MakeVideo():
     DR.SetSize(new_width, new_height)
 
     audio_file_url = data["audio_file_url"]
-    audio_file_url = RDH.DownloadData(audio_file_url, data["publicID"]["audio"])
+    audio_file_url = RDH.DownloadData(audio_file_url)
 
     background_mode = data["backgroundType"]
     
@@ -62,13 +62,13 @@ def MakeVideo():
         background_image_data = data["background"]
     elif background_mode == "image":
         background_image_data = data["background"]
-        background_image_data = RDH.DownloadData(background_image_data, data["publicID"]["background"])
+        background_image_data = RDH.DownloadData(background_image_data)
     elif background_mode == "video":
         background_image_data = data["background"]
-        background_image_data = RDH.DownloadData(background_image_data, data["publicID"]["background"])
+        background_image_data = RDH.DownloadData(background_image_data)
 
     disk_image_data = data["disk_image_url"]
-    disk_image_data = RDH.DownloadData(disk_image_data, data["publicID"]["center"])
+    disk_image_data = RDH.DownloadData(disk_image_data)
 
     watermark = data["watermark"]
 
@@ -81,6 +81,9 @@ def MakeVideo():
                         disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
     vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name)
 
+
+    path = RDH.UploadToCloud(output_video_name, resource_type = "video")
+    
     print("Cleaning Up.")
 
     os.remove(audio_file_url)
@@ -89,11 +92,20 @@ def MakeVideo():
         os.remove(background_image_data)
 
     os.remove(disk_image_data)
-
     os.remove(temp_video_filename)
-
-    path = RDH.UploadToCloud(output_video_name, data["publicID"]["background"], resource_type = "video")
     os.remove(output_video_name)
+
+    files_to_delete = [[data["publicID"]["audio"], "video"]]
+    files_to_delete.append([data["publicID"]["center"], "image"])
+
+    if background_mode == "image":
+        files_to_delete.append([data["publicID"]["background"], "image"])
+
+    if background_mode == "video":
+        files_to_delete.append([data["publicID"]["background"], "video"])
+
+
+    RDH.DeleteFilesNow(files_to_delete)
 
     time_now = datetime.datetime.now()
     time_now_str = time_now.strftime('%m-%d-%Y %H:%M:%S')
@@ -101,6 +113,8 @@ def MakeVideo():
     f = open(files_to_delete_path, "a")
     f.write(path["public_id"] + "," + time_now_str + "\n")
     f.close()
+
+    print(path)
 
     return {"out_filename": path["secure_url"]}
 
@@ -111,4 +125,4 @@ def AppRoot():
 
 
 
-app.run(host = '0.0.0.0')
+app.run(host = '0.0.0.0', port = 5100)

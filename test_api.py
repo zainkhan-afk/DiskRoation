@@ -1,5 +1,8 @@
 import requests
 import random
+from RemoteDataHandler import RemoteDataHandler
+
+RDH = RemoteDataHandler()
 
 # data = {
 # "audio_file_url": "https://res.cloudinary.com/dpynlgyfi/video/upload/v1706090865/record_data/audio.mp3",
@@ -20,19 +23,26 @@ import random
 # "background_image_url": "https://res.cloudinary.com/dpynlgyfi/image/upload/v1706090889/record_data/JB.jpg",
 # "background_video_url": "https://res.cloudinary.com/dpynlgyfi/video/upload/v1706090892/record_data/BG_vid.mp4",
 
+res_audio = RDH.UploadToCloud("D:/zain_dev/python_dev/rotating_disk/data/audio.mp3", resource_type = "video")
+res_Bg =  RDH.UploadToCloud("D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg", resource_type = "image")
+res_disk = RDH.UploadToCloud("D:/zain_dev/python_dev/rotating_disk/data/disk.jpg", resource_type = "image")
+
+# print(res_audio)
+# exit()
+
 data = {
-"audio_file_url": "https://res.cloudinary.com/dpynlgyfi/video/upload/v1706090865/record_data/audio.mp3",
-"backgroundType": 'video',
-"background": "https://res.cloudinary.com/dpynlgyfi/video/upload/v1706090892/record_data/BG_vid.mp4",
-"disk_image_url" : "https://res.cloudinary.com/dpynlgyfi/image/upload/v1706090889/record_data/IM.jpg",
+"audio_file_url": res_audio["secure_url"],
+"backgroundType": 'image',
+"background": res_Bg["secure_url"],
+"disk_image_url" : res_disk["secure_url"],
 "watermark" : True,
 "publicID":{
-				"background":"record_data/BG_vid",
-				"audio":"record_data/audio",
-				"center":"record_data/IM"
+				"background":res_Bg["public_id"],
+				"audio":res_audio["public_id"],
+				"center":res_disk["public_id"]
 		   },
 "dimension":"1080x1080",
-"email":"user email"
+"email":"zain.9496@gmail.com"
 }
 
 # data =  {
@@ -51,8 +61,9 @@ data = {
 # }
 
 
-url = "http://15.156.71.130:5100/generate_video"
-url = "http://127.0.0.1:5000/generate_video"
+# url = "http://15.156.71.130:5100/generate_video"
+url = "http://127.0.0.1:5100/generate_video"
 
 resp = requests.get(url, json=data)
+print(resp.text)
 print(resp.json())

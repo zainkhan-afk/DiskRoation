@@ -1,10 +1,11 @@
+from CloudinaryConfig import config
 import cloudinary
 
 cloudinary.config(
-cloud_name = "dpynlgyfi",
-api_key = "352343549873159",
-api_secret = "t2mYs6FwX5d9ldlSnOqRxFpWWYw",
-api_proxy = "http://proxy.server:3128"
+cloud_name = config["cloud_name"],
+api_key = config["api_key"],
+api_secret = config["api_secret"],
+api_proxy = config["api_proxy"]
 )
 
 import cloudinary.uploader
@@ -14,8 +15,8 @@ import requests
 import os
 import datetime
 
-delete_after = datetime.timedelta(hours = 5)
-filepath = "/home/zainkhan/record_maker/files_to_delete.txt"
+delete_after = datetime.timedelta(hours = 4)
+filepath = "files_to_delete.txt"
 
 def ReadFile(filename):
 	f = open(filename)

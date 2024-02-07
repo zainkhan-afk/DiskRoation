@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask import Response
 import soundfile as sf
 
 from DiskRotation import DiskRotation
@@ -6,6 +7,7 @@ from videoMaker import VideoMaker
 from RemoteDataHandler import RemoteDataHandler
 import os
 import datetime
+from Mailer import Mailer
 
 
 # "audio_file_url": "https://res.cloudinary.com/dpynlgyfi/video/upload/v1706090865/record_data/audio.mp3",
@@ -29,6 +31,7 @@ FPS = 30
 vid_maker = VideoMaker()
 DR = DiskRotation(WIDTH, HEIGHT, disk_radius = DISK_RADIUS, rpm = 200, fps = FPS)
 RDH = RemoteDataHandler()
+mailer = Mailer()
 
 app = Flask(__name__)
 
@@ -114,9 +117,9 @@ def MakeVideo():
     f.write(path["public_id"] + "," + time_now_str + "\n")
     f.close()
 
-    print(path)
-
-    return {"out_filename": path["secure_url"]}
+    mailer.SendMail(path["secure_url"], data["email"])
+    content = {"out_filename": path["secure_url"]}
+    return content, 200
 
 @app.route('/', methods=["GET"])
 def AppRoot():

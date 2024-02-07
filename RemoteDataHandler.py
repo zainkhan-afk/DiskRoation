@@ -1,13 +1,14 @@
+from CloudinaryConfig import config
 import cloudinary
-import datetime
 
 cloudinary.config(
-cloud_name = "dpynlgyfi",
-api_key = "352343549873159",
-api_secret = "t2mYs6FwX5d9ldlSnOqRxFpWWYw",
-# api_proxy = "http://proxy.server:3128"
+cloud_name = config["cloud_name"],
+api_key = config["api_key"],
+api_secret = config["api_secret"],
+api_proxy = config["api_proxy"]
 )
 
+import datetime
 import cloudinary.uploader
 import cloudinary.api
 import requests
@@ -19,7 +20,7 @@ class RemoteDataHandler:
 		self.delete_after = delete_after
 
 	def UploadToCloud(self, filepath, resource_type = "video"):
-		res = cloudinary.uploader.upload(filepath, folder = "record_data", 
+		res = cloudinary.uploader.upload(filepath, folder = "dmb_data", 
 										overwrite = True, resource_type = resource_type)
 
 		return res

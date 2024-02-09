@@ -1,5 +1,6 @@
 from CloudinaryConfig import config
 import cloudinary
+import os
 
 cloudinary.config(
 cloud_name = config["cloud_name"],
@@ -30,8 +31,8 @@ class RemoteDataHandler:
 			print(f"Deleting {obj[0]}")
 			cloudinary.uploader.destroy(obj[0], resource_type = obj[1])
 
-	def DownloadData(self, url):
-		local_filepath = url.split("/")[-1]	
+	def DownloadData(self, url, root_dir):
+		local_filepath = os.path.join(root_dir, url.split("/")[-1])
 
 		with requests.get(url, stream=True) as r:
 			r.raise_for_status()

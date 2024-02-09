@@ -131,6 +131,7 @@ def MakeVideo():
 
     except Exception as e:
         print(e)
+        return "", 500
 
 
 @app.route('/', methods=["GET"])

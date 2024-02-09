@@ -42,8 +42,8 @@ def TestAPI():
 	# }
 
 
-	url = "http://15.156.71.130:5100/generate_video"
-	# url = "http://127.0.0.1:5100/generate_video"
+	# url = "http://15.156.71.130:5100/generate_video"
+	url = "http://127.0.0.1:5100/generate_video"
 
 	print("Sending Request")
 	resp = requests.get(url, json=data)

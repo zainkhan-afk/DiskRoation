@@ -33,11 +33,6 @@ HEIGHT = 1080
 DISK_RADIUS = 300
 FPS = 30
 
-vid_maker = VideoMaker()
-DR = DiskRotation(WIDTH, HEIGHT, disk_radius = DISK_RADIUS, rpm = 200, fps = FPS)
-RDH = RemoteDataHandler()
-mailer = Mailer()
-
 app = Flask(__name__)
 
 
@@ -60,8 +55,11 @@ def MakeVideo():
 
     new_width = int(dims.split("x")[0])
     new_height = int(dims.split("x")[1])
-    DR.SetSize(new_width, new_height)
-
+    DR = DiskRotation(new_width, new_height, disk_radius = DISK_RADIUS, rpm = 200, fps = FPS)
+    vid_maker = VideoMaker()
+    RDH = RemoteDataHandler()
+    mailer = Mailer()
+    
     audio_file_url = data["audio_file_url"]
     audio_file_url = RDH.DownloadData(audio_file_url, FILES_DIR)
 

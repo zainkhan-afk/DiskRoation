@@ -226,7 +226,7 @@ class DiskRotation:
 					bg_img_idx = 0
 
 			self.DrawDisk(disk_image, bg_image, t)
-			writer.write(self.frame)
+			writer.write(self.frame.astype("uint8"))
 
 			# cv2.imshow("F", self.frame)
 			# k = cv2.waitKey(1)

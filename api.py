@@ -47,8 +47,8 @@ def MakeVideo():
 
     data = request.get_json()
 
-    temp_video_filename =  os.path.join(FILES_DIR, data["publicID"]["background"].replace("/", "_").replace("\\", "_") + "_temp_video.avi")
-    output_video_name =  os.path.join(FILES_DIR, data["publicID"]["background"].replace("/", "_").replace("\\", "_") + "video.mp4")
+    temp_video_filename =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "_temp_video.avi")
+    output_video_name =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "video.mp4")
 
 
     dims = data["dimension"]
@@ -66,7 +66,9 @@ def MakeVideo():
     background_mode = data["backgroundType"]
     
     if background_mode == "color":
-        background_image_data = data["background"]
+        background_image_data = data["background"].lstrip('#')
+        color = tuple(int(background_image_data[i:i+2], 16) for i in (0, 2, 4))
+        background_image_data = (color[2], color[1], color[0])
     elif background_mode == "image":
         background_image_data = data["background"]
         background_image_data = RDH.DownloadData(background_image_data, FILES_DIR)

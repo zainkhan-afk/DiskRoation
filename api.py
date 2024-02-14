@@ -30,7 +30,7 @@ if not os.path.exists(FILES_DIR):
 
 WIDTH = 1080
 HEIGHT = 1080
-DISK_RADIUS = 300
+DISK_RADIUS = int((min(WIDTH, HEIGHT)/2)*0.8)
 FPS = 30
 
 app = Flask(__name__)
@@ -55,6 +55,8 @@ def MakeVideo():
 
     new_width = int(dims.split("x")[0])
     new_height = int(dims.split("x")[1])
+    DISK_RADIUS = int((min(new_width, new_height)/2)*0.8)
+
     DR = DiskRotation(new_width, new_height, disk_radius = DISK_RADIUS, rpm = 200, fps = FPS)
     vid_maker = VideoMaker()
     RDH = RemoteDataHandler()

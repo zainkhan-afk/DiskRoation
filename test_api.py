@@ -2,14 +2,25 @@ import requests
 import random
 from RemoteDataHandler import RemoteDataHandler
 import time
+import sys
 
 def TestAPI():
 	print("Starting Test")
 
 	v = random.random()
+	if len(sys.argv) > 1:
+		if sys.argv[1].lower() == 'video':
+			v = 0.45
+		elif sys.argv[1].lower() == 'image':
+			v = 0.8
+		elif sys.argv[1].lower() == 'color':
+			v = 0.1
+		else:
+			print("valid inputs: video, image and color")
 
-	print(v)
-	time.sleep(3)
+
+	# print(v)
+	# time.sleep(3)
 
 	RDH = RemoteDataHandler()
 
@@ -34,7 +45,7 @@ def TestAPI():
 		"backgroundType": 'image',
 		"background": res_Bg["secure_url"],
 		"disk_image_url" : res_disk["secure_url"],
-		"watermark" : False,
+		"watermark" : True,
 		"publicID":{
 						"background":res_Bg["public_id"],
 						"audio":res_audio["public_id"],
@@ -51,7 +62,7 @@ def TestAPI():
 		"backgroundType": 'video',
 		"background": res_Bg["secure_url"],
 		"disk_image_url" : res_disk["secure_url"],
-		"watermark" : False,
+		"watermark" : True,
 		"publicID":{
 						"background":res_Bg["public_id"],
 						"audio":res_audio["public_id"],
@@ -67,7 +78,7 @@ def TestAPI():
 		"backgroundType": 'color',
 		"background": '#ff0000',
 		"disk_image_url" : res_disk["secure_url"],
-		"watermark" : False,
+		"watermark" : True,
 		"publicID":{
 						# "background":res_Bg["public_id"],
 						"audio":res_audio["public_id"],
@@ -109,8 +120,8 @@ def TestAPI():
 # }
 
 
-	url = "http://15.156.71.130:5100/generate_video"
-	# url = "http://127.0.0.1:5100/generate_video"
+	# url = "http://15.156.71.130:5100/generate_video"
+	url = "http://127.0.0.1:5100/generate_video"
 
 	print("Sending Request")
 	resp = requests.get(url, json=data)

@@ -1,10 +1,16 @@
 import requests
 import random
 from RemoteDataHandler import RemoteDataHandler
-
+import time
 
 def TestAPI():
 	print("Starting Test")
+
+	v = random.random()
+
+	print(v)
+	time.sleep(3)
+
 	RDH = RemoteDataHandler()
 
 	res_audio = RDH.UploadToCloud("D:/zain_dev/python_dev/rotating_disk/data/audio.mp3", resource_type = "video")
@@ -20,8 +26,6 @@ def TestAPI():
 
 	# exit()
 
-	v = random.random()
-
 	if v > 0.66666:
 		print("Image Background")
 		res_Bg =  RDH.UploadToCloud("D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg", resource_type = "image")
@@ -30,7 +34,7 @@ def TestAPI():
 		"backgroundType": 'image',
 		"background": res_Bg["secure_url"],
 		"disk_image_url" : res_disk["secure_url"],
-		"watermark" : True,
+		"watermark" : False,
 		"publicID":{
 						"background":res_Bg["public_id"],
 						"audio":res_audio["public_id"],
@@ -47,7 +51,7 @@ def TestAPI():
 		"backgroundType": 'video',
 		"background": res_Bg["secure_url"],
 		"disk_image_url" : res_disk["secure_url"],
-		"watermark" : True,
+		"watermark" : False,
 		"publicID":{
 						"background":res_Bg["public_id"],
 						"audio":res_audio["public_id"],
@@ -63,7 +67,7 @@ def TestAPI():
 		"backgroundType": 'color',
 		"background": '#ff0000',
 		"disk_image_url" : res_disk["secure_url"],
-		"watermark" : True,
+		"watermark" : False,
 		"publicID":{
 						# "background":res_Bg["public_id"],
 						"audio":res_audio["public_id"],
@@ -105,8 +109,8 @@ def TestAPI():
 # }
 
 
-	# url = "http://15.156.71.130:5100/generate_video"
-	url = "http://127.0.0.1:5100/generate_video"
+	url = "http://15.156.71.130:5100/generate_video"
+	# url = "http://127.0.0.1:5100/generate_video"
 
 	print("Sending Request")
 	resp = requests.get(url, json=data)

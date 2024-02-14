@@ -135,5 +135,5 @@ def AppRoot():
     return "Record Maker Root"
 
 
-
-app.run(host = '0.0.0.0', port = 5100)
+if __name__ == "__main__":
+    app.run(host = '0.0.0.0', port = 6100)

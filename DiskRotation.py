@@ -178,14 +178,16 @@ class DiskRotation:
 			bg_image[:, :, 1] = background_image_data[1]
 			bg_image[:, :, 2] = background_image_data[2]
 
-			bg_image = self.DrawWatermark(bg_image, "bg")
+			if self.use_watermark:
+				bg_image = self.DrawWatermark(bg_image, "bg")
 
 
 		elif background_mode == "image":
 			bg_image = cv2.imread(background_image_data)
 			bg_image = self.FormatImage(bg_image, new_width = self.width, clip_height_to = self.height)
 
-			bg_image = self.DrawWatermark(bg_image, "bg")
+			if self.use_watermark:
+				bg_image = self.DrawWatermark(bg_image, "bg")
 
 
 		elif background_mode == "video":

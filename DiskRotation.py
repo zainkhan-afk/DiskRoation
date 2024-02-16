@@ -9,6 +9,15 @@ class DiskRotation:
 		self.created_at_watermark_path = "grid_landscape_axkq4b.png"
 		self.logo_text_watermark_path = "grid_landscape_in6hqq.png"
 
+		self.logo_watermark_image = cv2.imread(self.logo_watermark_path, cv2.IMREAD_UNCHANGED)
+		self.created_at_watermark_image = cv2.imread(self.created_at_watermark_path, cv2.IMREAD_UNCHANGED)
+		self.logo_text_watermark_image = cv2.imread(self.logo_text_watermark_path, cv2.IMREAD_UNCHANGED)
+
+		# R, C, _ = self.logo_watermark_image.shape
+		# self.logo_watermark_image = cv2.resize(self.logo_watermark_image, (int(0.5 * C), int(0.5 * R)))
+
+		R, C, _ = self.created_at_watermark_image.shape
+		self.created_at_watermark_image = cv2.resize(self.created_at_watermark_image, (int(0.75 * C), int(0.75 * R)))
 
 
 	def SetSize(self, width, height):
@@ -80,8 +89,8 @@ class DiskRotation:
 
 	def DrawWatermark(self, image, image_type = "bg"):
 		if image_type == "bg":
-			im1 = cv2.imread(self.logo_watermark_path, cv2.IMREAD_UNCHANGED)
-			im2 = cv2.imread(self.created_at_watermark_path, cv2.IMREAD_UNCHANGED)
+			im1 = self.logo_watermark_image.copy()
+			im2 = self.created_at_watermark_image.copy()
 
 			im1_alpha = cv2.cvtColor(im1[:, :, -1], cv2.COLOR_GRAY2BGR).astype("float32") / 255
 			im1 = im1[:, :, :-1].astype("float32")
@@ -91,25 +100,25 @@ class DiskRotation:
 
 			H, W, _ = image.shape
 
-			x1 = 50
+			x1 = 25
 			x2 = x1 + im1.shape[1]
 
-			y1 = 50
+			y1 = 25
 			y2 = y1 + im1.shape[0]
 
 			image[y1:y2, x1:x2] = (im1*im1_alpha + image[y1:y2, x1:x2]*(1 - im1_alpha)).astype("uint8")
 
-			x2 = W - 50
+			x2 = W - 25
 			x1 = x2 - im2.shape[1]
 
-			y2 = H - 50
+			y2 = H - 25
 			y1 = y2 - im2.shape[0]
 
 			image[y1:y2, x1:x2] = (im2*im2_alpha + image[y1:y2, x1:x2]*(1 - im2_alpha)).astype("uint8")
 
 
 		elif image_type == "disk":
-			im = cv2.imread(self.logo_text_watermark_path, cv2.IMREAD_UNCHANGED)
+			im = self.logo_text_watermark_image.copy()
 
 			im_alpha = cv2.cvtColor(im[:, :, -1], cv2.COLOR_GRAY2BGR).astype("float32") / 255
 			im = im[:, :, :-1].astype("float32")

@@ -16,7 +16,35 @@ import os
 import datetime
 
 delete_after = datetime.timedelta(hours = 4)
-filepath = "files_to_delete.txt"
+# filepath = "files_to_delete.txt"
+
+def GetFilesToDelete():
+	# 2024-02-12T15:49:17+00:00
+	files_to_delete = []
+	results = cloudinary.Search().expression("dmb_data/*").execute()
+	time_now = datetime.datetime.now()
+	for result in results["resources"]:
+		date = result["created_at"].split("+")[0]
+		time = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
+
+		time_diff = time_now - time
+
+		if time_diff >= delete_after:
+			files_to_delete.append(result["public_id"])
+
+	return files_to_delete
+
+
+def DeleteFromCloud(files_to_delete):
+	num_deleted = 0
+	res = cloudinary.api.delete_resources(files_to_delete, resource_type="video")
+	
+	for f in res["deleted"]:
+		if res["deleted"][f] == 'deleted':
+			num_deleted += 1
+
+	return num_deleted
+
 
 def ReadFile(filename):
 	f = open(filename)
@@ -62,6 +90,15 @@ def MonitorAndCleanCloud(files_to_delete):
 	return files_to_delete
 
 if __name__ == "__main__":
-	files_to_delete = ReadFile(filepath)
-	files_to_delete = MonitorAndCleanCloud(files_to_delete)
-	WriteFile(filepath, files_to_delete)
+	# files_to_delete = ReadFile(filepath)
+	# files_to_delete = MonitorAndCleanCloud(files_to_delete)
+	# WriteFile(filepath, files_to_delete)
+
+	# results = cloudinary.Search().expression("dmb_data/*").execute()
+	# for result in results["resources"]:
+	# 	print(result["created_at"], result["public_id"])
+
+
+	files_to_delete = GetFilesToDelete()
+	num_deleted = DeleteFromCloud(files_to_delete)
+	print(f"Files delted: {num_deleted}")

@@ -38,11 +38,6 @@ app = Flask(__name__)
 
 @app.route('/generate_video', methods=['POST', "GET"])
 def MakeVideo():
-    files_to_delete_path = "files_to_delete.txt"
-
-    if not os.path.exists(files_to_delete_path):
-        f = open(files_to_delete_path, "w")
-        f.close()
 
 
     data = request.get_json()
@@ -120,10 +115,6 @@ def MakeVideo():
 
     time_now = datetime.datetime.now()
     time_now_str = time_now.strftime('%m-%d-%Y %H:%M:%S')
-
-    f = open(files_to_delete_path, "a")
-    f.write(path["public_id"] + "," + time_now_str + "\n")
-    f.close()
 
     mailer.SendMail(path["secure_url"], data["email"])
     content = {"out_filename": path["secure_url"]}

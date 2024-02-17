@@ -13,11 +13,22 @@ class DiskRotation:
 		self.created_at_watermark_image = cv2.imread(self.created_at_watermark_path, cv2.IMREAD_UNCHANGED)
 		self.logo_text_watermark_image = cv2.imread(self.logo_text_watermark_path, cv2.IMREAD_UNCHANGED)
 
-		# R, C, _ = self.logo_watermark_image.shape
-		# self.logo_watermark_image = cv2.resize(self.logo_watermark_image, (int(0.5 * C), int(0.5 * R)))
+		R, C, _ = self.logo_watermark_image.shape
+		self.logo_watermark_image = cv2.resize(self.logo_watermark_image, (int(1.6 * C), int(1.6 * R)))
 
-		R, C, _ = self.created_at_watermark_image.shape
-		self.created_at_watermark_image = cv2.resize(self.created_at_watermark_image, (int(0.75 * C), int(0.75 * R)))
+		# R, C, _ = self.created_at_watermark_image.shape
+		# self.created_at_watermark_image = cv2.resize(self.created_at_watermark_image, (int(0.75 * C), int(0.75 * R)))
+
+		self.created_at_watermark_image = self.created_at_watermark_image[:-10, :-10]
+
+	def ShowWatermarks(self):
+		self.frame[:, :, 2] = 255
+		disk = self.frame.copy()
+		disk[:, :, 1] = 255
+		self.frame = self.DrawWatermark(self.frame)
+		self.frame = self.DrawWatermark(self.frame)
+
+		self.DrawDisk(disk, self.frame, 0)
 
 
 	def SetSize(self, width, height):
@@ -108,10 +119,10 @@ class DiskRotation:
 
 			image[y1:y2, x1:x2] = (im1*im1_alpha + image[y1:y2, x1:x2]*(1 - im1_alpha)).astype("uint8")
 
-			x2 = W - 25
+			x2 = W
 			x1 = x2 - im2.shape[1]
 
-			y2 = H - 25
+			y2 = H
 			y1 = y2 - im2.shape[0]
 
 			image[y1:y2, x1:x2] = (im2*im2_alpha + image[y1:y2, x1:x2]*(1 - im2_alpha)).astype("uint8")
@@ -250,3 +261,13 @@ class DiskRotation:
 
 		writer.release()
 		return True
+
+if __name__ == "__main__":
+	DR = DiskRotation(1080, 1080, disk_radius = int((1080/2)*0.8), rpm = 200, fps = 30)
+	DR.Clear()
+	DR.ShowWatermarks()
+
+	# cv2.imshow("frame", DR.frame)
+	# cv2.waitKey(0)
+
+	cv2.imwrite("test.png", DR.frame)

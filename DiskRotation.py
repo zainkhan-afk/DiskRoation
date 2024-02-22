@@ -184,6 +184,8 @@ class DiskRotation:
 
 	def CreateVideoFrames(self, time, use_watermark = True, background_mode = 0, background_image_data = None, disk_image_data = None,  temp_video_filename = "video_temp.avi"):
 		self.use_watermark = use_watermark
+		total_frames = None
+		bg_video_cap = None
 
 		if background_mode not in ["color","image","video"]:
 			print("Background mode is invalid. Must be color, image or video.")
@@ -211,7 +213,8 @@ class DiskRotation:
 
 
 		elif background_mode == "video":
-			all_background_frames = self.LoadVideoImages(background_image_data)
+			bg_video_cap = cv2.VideoCapture(background_image_data)
+			total_frames = bg_video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
 
 
 		disk_image = cv2.imread(disk_image_data)
@@ -241,11 +244,14 @@ class DiskRotation:
 
 
 			if background_mode == "video":
-				bg_image = all_background_frames[bg_img_idx]
-				bg_img_idx += 1
+				ret, bg_image = bg_video_cap.read()
+				if not ret:
+					bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+					ret, bg_image = bg_video_cap.read()
 
-				if bg_img_idx>=len(all_background_frames):
-					bg_img_idx = 0
+				bg_image = self.FormatImage(bg_image, new_width = self.width, clip_height_to = self.height)
+				if self.use_watermark:
+					bg_image = self.DrawWatermark(bg_image, "bg")
 
 			self.DrawDisk(disk_image, bg_image, t)
 			writer.write(self.frame.astype("uint8"))

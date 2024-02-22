@@ -2,7 +2,7 @@ from test_api import TestAPI
 import threading
 
 
-NUM_TESTS = 20
+NUM_TESTS = 50
 
 threads = []
 

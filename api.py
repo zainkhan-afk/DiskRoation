@@ -42,7 +42,7 @@ def MakeVideo():
 
     data = request.get_json()
 
-    temp_video_filename =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "_temp_video.avi")
+    temp_video_filename =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "_temp_video.mp4")
     output_video_name =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "video.mp4")
 
 

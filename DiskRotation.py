@@ -10,8 +10,8 @@ class DiskRotation:
 		self.created_at_watermark_path = "grid_landscape_axkq4b.png"
 		self.logo_text_watermark_path = "grid_landscape_in6hqq.png"
 
-		self.MakeBGWatermarkStensil()
-		self.MakeDiskWatermarkStensil()
+		# self.MakeBGWatermarkStensil()
+		# self.MakeDiskWatermarkStensil()
 
 		self.logo_watermark_image = cv2.imread(self.logo_watermark_path, cv2.IMREAD_UNCHANGED)
 		self.created_at_watermark_image = cv2.imread(self.created_at_watermark_path, cv2.IMREAD_UNCHANGED)
@@ -186,12 +186,6 @@ class DiskRotation:
 			# image = image + self.BG_watermark_stensil
 
 
-			# t = cv2.resize(self.BG_watermark_stensil, (int(self.BG_watermark_stensil_alpha.shape[1]*0.7), int(self.BG_watermark_stensil_alpha_inv.shape[0]*0.7)))
-
-			# cv2.imshow("t", t)
-			# cv2.waitKey(0)
-
-
 			im1 = self.logo_watermark_image.copy()
 			im2 = self.created_at_watermark_image.copy()
 
@@ -334,10 +328,9 @@ class DiskRotation:
 
 
 		size = (self.width, self.height)
-		writer = cv2.VideoWriter(temp_video_filename,  cv2.VideoWriter_fourcc(*'MJPG'), self.fps, size) 
+		writer = cv2.VideoWriter(temp_video_filename,  cv2.VideoWriter_fourcc(*'mp4v'), self.fps, size) 
+		# writer = cv2.VideoWriter(temp_video_filename,  cv2.VideoWriter_fourcc(*'MJPG'), self.fps, size) 
 
-
-		tick = time.time()
 		bg_img_idx = 0
 		t = 0
 		for i in range(num_frames):
@@ -365,19 +358,18 @@ class DiskRotation:
 
 			t += delta_t
 
-		tock = time.time()
-
-		print(f"Time taken in generative video frames: {tock - tick}")
-
 		writer.release()
 		return True
 
 if __name__ == "__main__":
-	background_mode = "video"
+	from videoMaker import VideoMaker
+
+	background_mode = "color"
 	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio_1.5_min.mp3"
 	# audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
 	disk_image_data = "D:/zain_dev/python_dev/rotating_disk/data/disk.jpg"
-	temp_video_filename = "../temp.avi"
+	temp_video_filename = "../temp.mp4"
+	output_video_name = "../final.mp4"
 
 
 	if background_mode == "image":
@@ -387,7 +379,7 @@ if __name__ == "__main__":
 	else:
 		background_image_data = '#ff0000'
 		background_image_data = (0, 255, 0)
-	DR = DiskRotation(1080, 1080, disk_radius = int((1080/2)*0.8), rpm = 200, fps = 30)
+	DR = DiskRotation(1080, 1080, disk_radius = int((1080/2)*0.8), rpm = 200, fps = 25)
 
 	sound_data, fs = sf.read(audio_file_url, dtype='float32')
 
@@ -398,4 +390,13 @@ if __name__ == "__main__":
 						disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
 	t2 = time.time()
 
-	print(f"Total Time taken: {t2 -t1} s")
+	print(f"Total Time taken to make initial video: {t2 -t1} s")
+
+
+	vid_maker = VideoMaker()
+
+	t1 = time.time()
+	vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name)
+	t2 = time.time()
+
+	print(f"Total Time taken to combine video with audio: {t2 -t1} s")

@@ -100,5 +100,7 @@ if __name__ == "__main__":
 
 
 	files_to_delete = GetFilesToDelete()
-	num_deleted = DeleteFromCloud(files_to_delete)
-	print(f"Files delted: {num_deleted}")
+	print(f"Files selected to be deleted: {len(files_to_delete)}")
+	if len(files_to_delete) != 0:
+			num_deleted = DeleteFromCloud(files_to_delete)
+			print(f"Files delted: {num_deleted}")

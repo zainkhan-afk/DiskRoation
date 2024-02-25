@@ -265,7 +265,7 @@ class DiskRotation:
 
 	def RotateImage(self, image, angle):
 		row, col = image.shape[:2]
-		center = tuple(np.array([row,col])/2)
+		center = tuple(np.array([col, row])/2)
 		rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
 		new_image = cv2.warpAffine(image, rot_mat, (col, row))
 		return new_image
@@ -365,7 +365,7 @@ if __name__ == "__main__":
 	from videoMaker import VideoMaker
 
 	background_mode = "color"
-	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio_1.5_min.mp3"
+	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
 	# audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
 	disk_image_data = "D:/zain_dev/python_dev/rotating_disk/data/disk.jpg"
 	temp_video_filename = "../temp.mp4"
@@ -379,7 +379,7 @@ if __name__ == "__main__":
 	else:
 		background_image_data = '#ff0000'
 		background_image_data = (0, 255, 0)
-	DR = DiskRotation(1080, 1080, disk_radius = int((1080/2)*0.8), rpm = 200, fps = 25)
+	DR = DiskRotation(1080, 1920, disk_radius = int((1080/2)*0.8), rpm = 200, fps = 25)
 
 	sound_data, fs = sf.read(audio_file_url, dtype='float32')
 

@@ -379,7 +379,7 @@ if __name__ == "__main__":
 	else:
 		background_image_data = '#ff0000'
 		background_image_data = (0, 255, 0)
-	DR = DiskRotation(1080, 1920, disk_radius = int((1080/2)*0.8), rpm = 200, fps = 25)
+	DR = DiskRotation(1080, 1920, disk_radius = int((1080/2)*0.8), rpm = 225, fps = 25)
 
 	sound_data, fs = sf.read(audio_file_url, dtype='float32')
 

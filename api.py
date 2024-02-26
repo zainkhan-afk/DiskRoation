@@ -52,7 +52,7 @@ def MakeVideo():
     new_height = int(dims.split("x")[1])
     DISK_RADIUS = int((min(new_width, new_height)/2)*0.8)
 
-    DR = DiskRotation(new_width, new_height, disk_radius = DISK_RADIUS, rpm = 200, fps = FPS)
+    DR = DiskRotation(new_width, new_height, disk_radius = DISK_RADIUS, rpm = 225, fps = FPS)
     vid_maker = VideoMaker()
     RDH = RemoteDataHandler()
     mailer = Mailer()

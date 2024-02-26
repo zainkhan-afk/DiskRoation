@@ -11,4 +11,4 @@ class VideoMaker:
 		audio = mp.AudioFileClip(audio_file_name)
 		video = mp.VideoFileClip(record_video_name)
 		final = video.set_audio(audio)
-		final.write_videofile(output_video_name)
+		final.write_videofile(output_video_name, audio_codec = "aac")

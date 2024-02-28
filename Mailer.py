@@ -58,37 +58,9 @@ class Mailer:
 <body>
 	 <div class="container">
 		<p>Hello,</p>
-		<p>Your Digital Media Bay video is ready for download. To download, please
-		click on the "Download Video" button or use the provided link below. When
-		using a mobile device, the video will be saved to the "Files" folder on
-		iPhone and "My Files" or “File Manager" on Android.</p>
+		<p>Your Digital Media Bay video is ready! To download, click the link below, open in your browser, then right-click and select "Save As." When using mobile devices, the video will be saved in the "Files" folder for iPhone or "My Files" or "File Manager" on Android.</p>
 		<p>Please note this link will expire in 4 hours.</p>
-		<p><strong>Your Video url:</strong> <a href="{videoURL}">{videoURL}</a></p>
-		<a class="mb-2" href="https://digitalmediabay.vercel.app/download?url={videoURL}"
-		style="
-		padding: 10px 20px;
-		appearance: none;
-		-moz-appearance: none;
-		-webkit-appearance: none;
-		background: #ff2a61;
-		border: none;
-		border-radius: 0.5em;
-		box-sizing: border-box;
-		color: #fff !important;
-		cursor: pointer;
-		display: flex;
-		height: 2.4em;
-		justify-content: center;
-		line-height: 1em;
-		align-items:center;
-		font-weight:bold;
-		outline: none;
-		width: -moz-fit-content;
-		width: -webkit-fit-content;
-		width: fit-content;
-		text-decoration: none;">
-		Download Video
-		  </a>          
+		<p><strong>Your Video url:</strong> <a href="{videoURL}">{videoURL}</a></p>       
 		<p>If you experience any issues with this delivery, we advise to simply create another
 		video. If the issue persists, please reply to this email with a detailed description of the
 		problem.</p>

@@ -160,7 +160,8 @@ class DiskRotation:
 				crop_y1 = diff // 2
 				crop_y2 = diff // 2 + new_H
 
-				new_image = np.zeros((new_width, clip_height_to, 3)).astype("uint8")
+				new_image = np.zeros((clip_height_to, new_width, 3)).astype("uint8")
+
 				new_image[crop_y1:crop_y2, crop_x1:crop_x2] = image
 				image = new_image.copy()
 
@@ -364,8 +365,8 @@ class DiskRotation:
 if __name__ == "__main__":
 	from videoMaker import VideoMaker
 
-	background_mode = "color"
-	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
+	background_mode = "video"
+	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio_long.mp3"
 	# audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
 	disk_image_data = "D:/zain_dev/python_dev/rotating_disk/data/disk.jpg"
 	temp_video_filename = "../temp.mp4"
@@ -375,7 +376,8 @@ if __name__ == "__main__":
 	if background_mode == "image":
 		background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg"
 	if background_mode == "video":	
-		background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG_Vid.mp4"
+		# background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG_Vid.mp4"
+		background_image_data = "C:/Users/zain/Downloads/What to expect if you encounter a wolf.mp4"
 	else:
 		background_image_data = '#ff0000'
 		background_image_data = (0, 255, 0)

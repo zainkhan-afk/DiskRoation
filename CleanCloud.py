@@ -37,7 +37,7 @@ def GetFilesToDelete():
 
 def DeleteFromCloud(files_to_delete):
 	num_deleted = 0
-	res = cloudinary.api.delete_resources(files_to_delete, resource_type="video")
+	res = cloudinary.api.delete_resources(files_to_delete, resource_type="video", type="upload")
 	
 	for f in res["deleted"]:
 		if res["deleted"][f] == 'deleted':

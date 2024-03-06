@@ -1,7 +1,8 @@
 import youtube_dl
 
 class YTDownloader:
-	def __init__(self, desired_height = 1080, desired_extension = "mp4"):
+	def __init__(self, YT_dir, desired_height = 1080, desired_extension = "mp4"):
+		self.YT_dir = YT_dir
 		self.desired_height = desired_height
 		self.desired_extension = desired_extension
 
@@ -15,8 +16,6 @@ class YTDownloader:
 
 		for f in formats:
 			if 'height' in f:
-				print(f['height'], f['ext'])
-				print(f)
 				if f['height'] == self.desired_height and f["ext"] == self.desired_extension: 
 					extension = self.desired_extension
 					closest_height = self.desired_height
@@ -35,7 +34,11 @@ class YTDownloader:
 
 
 
-		options = {"format" : f"{extension}[height={closest_height}]"}
+		options = {
+						"format" : f"{extension}[height={closest_height}]",
+						"outtmpl": f'{self.YT_dir}/%(extractor_key)s/%(extractor)s-%(id)s-%(title)s.%(ext)s',
+
+				  }
 
 		return options
 
@@ -49,8 +52,6 @@ class YTDownloader:
 
 		ydl_opts = self.GetDownloadOptions(formats)
 
-		print(ydl_opts)
-
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 			ydl.download([url])
 
@@ -58,5 +59,5 @@ class YTDownloader:
 if __name__ == "__main__":
 	url = "https://www.youtube.com/watch?v=HVtE2rcJ5yk&ab_channel=MATECA"
 
-	yt_down = YTDownloader()
+	yt_down = YTDownloader("YOUTUBE_FILES")
 	yt_down.DownloadVideo(url)

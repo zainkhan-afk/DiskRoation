@@ -5,6 +5,7 @@ import soundfile as sf
 from DiskRotation import DiskRotation
 from videoMaker import VideoMaker
 from RemoteDataHandler import RemoteDataHandler
+from YTDownloader import YTDownloader
 import datetime
 from Mailer import Mailer
 import os
@@ -27,6 +28,11 @@ FILES_DIR = "VIDEO_FILES"
 
 if not os.path.exists(FILES_DIR):
     os.mkdir(FILES_DIR)
+
+YT_DIR = "YOUTUBE_FILES"
+
+if not os.path.exists(YT_DIR):
+    os.mkdir(YT_DIR)
 
 WIDTH = 1080
 HEIGHT = 1080
@@ -56,6 +62,7 @@ def MakeVideo():
     vid_maker = VideoMaker()
     RDH = RemoteDataHandler()
     mailer = Mailer()
+    YT_down = YTDownloader()
     
     audio_file_url = data["audio_file_url"]
     audio_file_url = RDH.DownloadData(audio_file_url, FILES_DIR)
@@ -72,6 +79,7 @@ def MakeVideo():
     elif background_mode == "video":
         background_image_data = data["background"]
         background_image_data = RDH.DownloadData(background_image_data, FILES_DIR)
+    elif background_mode == "youtube":
 
     disk_image_data = data["disk_image_url"]
     disk_image_data = RDH.DownloadData(disk_image_data, FILES_DIR)

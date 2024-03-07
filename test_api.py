@@ -10,13 +10,16 @@ def TestAPI():
 	v = random.random()
 	if len(sys.argv) > 1:
 		if sys.argv[1].lower() == 'video':
-			v = 0.45
+			v = 0.6
 		elif sys.argv[1].lower() == 'image':
-			v = 0.8
+			v = 0.9
 		elif sys.argv[1].lower() == 'color':
+			v = 0.3
+		elif sys.argv[1].lower() == 'youtube':
 			v = 0.1
 		else:
-			print("valid inputs: video, image and color")
+			print("valid inputs: video, image, color and youtube.")
+			print("Randomly choosing background type.")
 
 
 	# print(v)
@@ -37,7 +40,7 @@ def TestAPI():
 
 	# exit()
 
-	if v > 0.66666:
+	if v >= 0.75:
 		print("Image Background")
 		res_Bg =  RDH.UploadToCloud("D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg", resource_type = "image")
 		data = {
@@ -54,7 +57,7 @@ def TestAPI():
 		"dimension":"1080x1080",
 		"email":"zain.9496@gmail.com"
 		}
-	elif 0.33333 < v <= 0.666666:
+	elif 0.5 <= v < 0.75:
 		print("Video Background")
 		res_Bg =  RDH.UploadToCloud("D:/zain_dev/python_dev/rotating_disk/data/BG_Vid.mp4", resource_type = "video")
 		data = {
@@ -71,7 +74,7 @@ def TestAPI():
 		"dimension":"1080x1080",
 		"email":"zain.9496@gmail.com"
 		}
-	else:
+	elif 0.25 <= v < 0.5:
 		print("Solid Background")
 		data = {
 		"audio_file_url": res_audio["secure_url"],
@@ -81,6 +84,21 @@ def TestAPI():
 		"watermark" : True,
 		"publicID":{
 						# "background":res_Bg["public_id"],
+						"audio":res_audio["public_id"],
+						"center":res_disk["public_id"]
+				   },
+		"dimension":"1080x1080",
+		"email":"zain.9496@gmail.com"
+		}
+	else:
+		print("Youtube Background")
+		data = {
+		"audio_file_url": res_audio["secure_url"],
+		"backgroundType": 'youtube',
+		"background": 'https://www.youtube.com/watch?v=HVtE2rcJ5yk&ab_channel=MATECA',
+		"disk_image_url" : res_disk["secure_url"],
+		"watermark" : True,
+		"publicID":{
 						"audio":res_audio["public_id"],
 						"center":res_disk["public_id"]
 				   },

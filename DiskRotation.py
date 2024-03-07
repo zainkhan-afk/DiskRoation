@@ -101,8 +101,6 @@ class DiskRotation:
 		self.disk_watermark_stensil = cv2.bitwise_and(self.disk_watermark_stensil, self.disk_watermark_stensil, mask = self.disk_watermark_stensil_alpha)
 		self.disk_watermark_stensil_alpha_inv = cv2.bitwise_not(self.disk_watermark_stensil_alpha)
 
-
-
 	def ShowWatermarks(self):
 		self.frame[:, :, 2] = 255
 		disk = self.frame.copy()
@@ -111,7 +109,6 @@ class DiskRotation:
 		self.frame = self.DrawWatermark(self.frame)
 
 		self.DrawDisk(disk, self.frame, 0)
-
 
 	def SetSize(self, width, height):
 		self.width = width
@@ -136,34 +133,44 @@ class DiskRotation:
 
 		self.Clear()
 
-	def FormatImage(self, image, new_width, clip_height_to):
-		H, W, _ = image.shape
-		new_W = new_width
-		new_H = int(new_W * H / W)
+	def ResizeTo(self, image, target_width = None, target_height = None):
+		'''
+		oldH     newH
+		----  =  ----
+		oldW     newW
 
-		image = cv2.resize(image, (new_W, new_H))
+		newH = oldH
+		       ---- * newW
+		       oldW
 
-		if new_H > clip_height_to:
-			diff = new_H - clip_height_to
-			crop_x1 = 0
-			crop_x2 = new_W
-			crop_y1 = diff // 2
-			crop_y2 = diff // 2 + clip_height_to
 
-			image = image[crop_y1:crop_y2, crop_x1:crop_x2]
+		newW = oldW
+		       ---- * newH
+		       oldH
+		'''
+		if target_width is None and target_height is not None:
+			H, W, _ = image.shape
+			new_H = target_height
+			new_W = int(new_H * W / H)
 
-		if new_H < clip_height_to:
-				diff = clip_height_to - new_H
+			image = cv2.resize(image, (new_W, new_H))
 
-				crop_x1 = 0
-				crop_x2 = new_W
-				crop_y1 = diff // 2
-				crop_y2 = diff // 2 + new_H
+			if new_W > self.width:
+				center_x = new_W // 2
+				x1 = center_x - self.width//2
+				x2 = x1 + self.width
 
-				new_image = np.zeros((clip_height_to, new_width, 3)).astype("uint8")
+				image = image[:, x1:x2]
 
-				new_image[crop_y1:crop_y2, crop_x1:crop_x2] = image
-				image = new_image.copy()
+			if new_W < self.width:
+				image = self.PadImage(image, new_img_size = (self.width, self.height))
+
+		if target_width is not None and target_height is None:
+			H, W, _ = image.shape
+			new_W = target_width
+			new_H = int(new_W * H / W)
+
+			image = cv2.resize(image, (new_W, new_H))
 
 		return image
 
@@ -301,7 +308,9 @@ class DiskRotation:
 
 		elif background_mode == "image":
 			bg_image = cv2.imread(background_image_data)
-			bg_image = self.FormatImage(bg_image, new_width = self.width, clip_height_to = self.height)
+			# bg_image = self.FormatImage(bg_image, new_width = self.width, clip_height_to = self.height)
+			bg_image = self.ResizeTo(bg_image, target_height = self.height)
+
 
 			if self.use_watermark:
 				bg_image = self.DrawWatermark(bg_image, "bg")
@@ -316,7 +325,9 @@ class DiskRotation:
 
 
 		disk_image = cv2.imread(disk_image_data)
-		disk_image = self.FormatImage(disk_image, new_width = self.disk_radius*2, clip_height_to = self.disk_radius*2)
+		# disk_image = self.FormatImage(disk_image, new_width = self.disk_radius*2, clip_height_to = self.disk_radius*2)
+		disk_image = self.ResizeTo(disk_image, target_height = self.disk_radius*2)
+
 		disk_image = self.PadImage(disk_image, (self.width, self.height))
 
 		if self.use_watermark:
@@ -345,8 +356,9 @@ class DiskRotation:
 				if not ret:
 					bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 					ret, bg_image = bg_video_cap.read()
-
-				bg_image = self.FormatImage(bg_image, new_width = self.width, clip_height_to = self.height)
+				bg_image = self.ResizeTo(bg_image, target_height = self.height)
+				# print(bg_image.shape, self.frame.shape, self.height)
+				# cv2.imshow("bg_image", bg_image)
 				if self.use_watermark:
 					bg_image = self.DrawWatermark(bg_image, "bg")
 
@@ -366,9 +378,9 @@ if __name__ == "__main__":
 	from videoMaker import VideoMaker
 
 	background_mode = "video"
-	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio_long.mp3"
-	# audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
-	disk_image_data = "D:/zain_dev/python_dev/rotating_disk/data/disk.jpg"
+	# audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio_long.mp3"
+	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
+	disk_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg"
 	temp_video_filename = "../temp.mp4"
 	output_video_name = "../final.mp4"
 
@@ -376,12 +388,12 @@ if __name__ == "__main__":
 	if background_mode == "image":
 		background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg"
 	if background_mode == "video":	
-		# background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG_Vid.mp4"
-		background_image_data = "C:/Users/zain/Downloads/What to expect if you encounter a wolf.mp4"
+		background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG_Vid.mp4"
+		# background_image_data = "C:/Users/zain/Downloads/What to expect if you encounter a wolf.mp4"
 	else:
 		background_image_data = '#ff0000'
 		background_image_data = (0, 255, 0)
-	DR = DiskRotation(1080, 1920, disk_radius = int((1080/2)*0.8), rpm = 225, fps = 25)
+	DR = DiskRotation(1080, 1080, disk_radius = int((1080/2)*0.8), rpm = 225, fps = 25)
 
 	sound_data, fs = sf.read(audio_file_url, dtype='float32')
 

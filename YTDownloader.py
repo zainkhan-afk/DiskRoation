@@ -1,3 +1,4 @@
+import os
 import youtube_dl
 
 class YTDownloader:
@@ -7,23 +8,27 @@ class YTDownloader:
 		self.desired_extension = desired_extension
 
 
-	def GetDownloadOptions(self, formats):
+	def GetDownloadOptions(self, formats, title):
 		options = {}
 
 		diff = 10000
 		closest_height = 0
-		extension = ''
+		extension = ""
+
+		filename = title
 
 		for f in formats:
 			if 'height' in f:
 				if f['height'] == self.desired_height and f["ext"] == self.desired_extension: 
 					extension = self.desired_extension
 					closest_height = self.desired_height
+					filename = f"{title}.{f['ext']}"
 					break
 
 				elif f['height'] == self.desired_height and f["ext"] != self.desired_extension:
 					closest_height = self.desired_height
 					extension = f["ext"]
+					filename += f".{f['ext']}"
 					break
 					
 				else:
@@ -31,16 +36,17 @@ class YTDownloader:
 						diff = abs(f['height'] - self.desired_height)
 						closest_height = f['height']
 						extension = f["ext"]
+						filename += f".{f['ext']}"
+
 
 
 
 		options = {
 						"format" : f"{extension}[height={closest_height}]",
-						"outtmpl": f'{self.YT_dir}/%(extractor_key)s/%(extractor)s-%(id)s-%(title)s.%(ext)s',
-
+						"outtmpl": f'{self.YT_dir}/%(title)s.%(ext)s'
 				  }
 
-		return options
+		return options, os.path.join(self.YT_dir, filename)
 
 	def DownloadVideo(self, url):
 		ydl_opts = {}
@@ -48,12 +54,16 @@ class YTDownloader:
 
 		info_dict = ydl.extract_info(url, download=False)
 
+		title = info_dict.get("title", None)
+
 		formats = info_dict.get('formats',None)
 
-		ydl_opts = self.GetDownloadOptions(formats)
+		ydl_opts, filepath = self.GetDownloadOptions(formats, title)
 
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 			ydl.download([url])
+
+		return filepath
 
 
 if __name__ == "__main__":

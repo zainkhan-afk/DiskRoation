@@ -73,13 +73,19 @@ def MakeVideo():
         background_image_data = data["background"].lstrip('#')
         color = tuple(int(background_image_data[i:i+2], 16) for i in (0, 2, 4))
         background_image_data = (color[2], color[1], color[0])
+    
     elif background_mode == "image":
         background_image_data = data["background"]
         background_image_data = RDH.DownloadData(background_image_data, FILES_DIR)
+    
     elif background_mode == "video":
         background_image_data = data["background"]
         background_image_data = RDH.DownloadData(background_image_data, FILES_DIR)
+    
     elif background_mode == "youtube":
+        background_image_data = data["background"]
+        background_image_data = YT_down.DownloadVideo(background_image_data)
+        background_mode = "video"
 
     disk_image_data = data["disk_image_url"]
     disk_image_data = RDH.DownloadData(disk_image_data, FILES_DIR)

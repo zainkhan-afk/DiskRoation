@@ -44,8 +44,7 @@ app = Flask(__name__)
 
 @app.route('/generate_video', methods=['POST', "GET"])
 def MakeVideo():
-
-
+    was_YT_mode = False
     data = request.get_json()
 
     temp_video_filename =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "_temp_video.mp4")
@@ -86,6 +85,7 @@ def MakeVideo():
         background_image_data = data["background"]
         background_image_data = YT_down.DownloadVideo(background_image_data)
         background_mode = "video"
+        was_YT_mode = True
 
     disk_image_data = data["disk_image_url"]
     disk_image_data = RDH.DownloadData(disk_image_data, FILES_DIR)
@@ -121,7 +121,7 @@ def MakeVideo():
     if background_mode == "image":
         files_to_delete.append([data["publicID"]["background"], "image"])
 
-    if background_mode == "video":
+    if background_mode == "video" and not was_YT_mode:
         files_to_delete.append([data["publicID"]["background"], "video"])
 
 

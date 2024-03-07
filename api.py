@@ -61,7 +61,7 @@ def MakeVideo():
     vid_maker = VideoMaker()
     RDH = RemoteDataHandler()
     mailer = Mailer()
-    YT_down = YTDownloader()
+    YT_down = YTDownloader(YT_DIR)
     
     audio_file_url = data["audio_file_url"]
     audio_file_url = RDH.DownloadData(audio_file_url, FILES_DIR)

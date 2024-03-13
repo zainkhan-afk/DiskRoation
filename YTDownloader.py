@@ -22,25 +22,20 @@ class YTDownloader:
 				if f['height'] == self.desired_height and f["ext"] == self.desired_extension: 
 					extension = self.desired_extension
 					closest_height = self.desired_height
-					filename = f"{title}.{f['ext']}"
 					break
 
 				elif f['height'] == self.desired_height and f["ext"] != self.desired_extension:
 					closest_height = self.desired_height
 					extension = f["ext"]
-					filename += f".{f['ext']}"
-					break
 					
-				else:
+				if closest_height != self.desired_height:
 					if abs(f['height'] - self.desired_height) < diff:
 						diff = abs(f['height'] - self.desired_height)
 						closest_height = f['height']
 						extension = f["ext"]
-						filename += f".{f['ext']}"
 
 
-
-
+		filename += f".{extension}"
 		options = {
 						"format" : f"{extension}[height={closest_height}]",
 						"outtmpl": f'{self.YT_dir}/%(title)s.%(ext)s'
@@ -67,7 +62,21 @@ class YTDownloader:
 
 
 if __name__ == "__main__":
-	url = "https://www.youtube.com/watch?v=HVtE2rcJ5yk&ab_channel=MATECA"
+	url = "https://www.youtube.com/watch?v=vJ6T7bV6Zo0"
 
 	yt_down = YTDownloader("YOUTUBE_FILES", desired_height = 720)
-	yt_down.DownloadVideo(url)
+	filepath = yt_down.DownloadVideo(url)
+
+	print(filepath)
+
+	# import cv2
+
+	# cap = cv2.VideoCapture(filepath)
+
+	# while True:
+	# 	ret, frame = cap.read()
+
+	# 	if not ret:
+	# 		break
+
+	# 	print(frame.shape)

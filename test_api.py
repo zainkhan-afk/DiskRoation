@@ -103,7 +103,7 @@ def TestAPI():
 						"center":res_disk["public_id"]
 				   },
 		"dimension":"1080x1080",
-		"email":"email"
+		"email":"zain.9496@gmail.com"
 		}
 
 	# data =  {

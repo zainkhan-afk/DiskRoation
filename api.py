@@ -83,7 +83,7 @@ def MakeVideo():
     
     elif background_mode == "youtube":
         background_image_data = data["background"]
-        background_image_data = YT_down.DownloadVideo(background_image_data, data["publicID"]["audio"])
+        background_image_data = YT_down.DownloadVideo(background_image_data, data["publicID"]["audio"].replace("/", "_").replace("\\", "_"))
         YT_bg_mode = True
         background_mode = "video"
 

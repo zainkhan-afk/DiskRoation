@@ -43,6 +43,15 @@ def DeleteFromCloud(files_to_delete):
 		if res["deleted"][f] == 'deleted':
 			num_deleted += 1
 
+	if num_deleted != len(files_to_delete):
+		num_deleted = 0
+		for public_id in files_to_delete:
+			res = cloudinary.uploader.destroy(public_id)
+			if res["result"] == 'ok':
+				num_deleted += 1
+
+
+
 	return num_deleted
 
 

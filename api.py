@@ -83,7 +83,7 @@ def MakeVideo():
     
     elif background_mode == "youtube":
         background_image_data = data["background"]
-        background_image_data = YT_down.DownloadVideo(background_image_data)
+        background_image_data = YT_down.DownloadVideo(background_image_data, data["publicID"]["audio"])
         YT_bg_mode = True
         background_mode = "video"
 
@@ -106,14 +106,21 @@ def MakeVideo():
     
     print("Cleaning Up.")
 
-    os.remove(audio_file_url)
+    if os.path.exists(audio_file_url):
+        os.remove(audio_file_url)
 
     if background_mode != "color":
-        os.remove(background_image_data)
+        if os.path.exists(background_image_data):
+            os.remove(background_image_data)
 
-    os.remove(disk_image_data)
-    os.remove(temp_video_filename)
-    os.remove(output_video_name)
+    if os.path.exists(disk_image_data):
+        os.remove(disk_image_data)
+    
+    if os.path.exists(temp_video_filename):
+        os.remove(temp_video_filename)
+    
+    if os.path.exists(output_video_name):
+        os.remove(output_video_name)
 
     files_to_delete = [[data["publicID"]["audio"], "video"]]
     files_to_delete.append([data["publicID"]["center"], "image"])

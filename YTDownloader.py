@@ -8,14 +8,14 @@ class YTDownloader:
 		self.desired_extension = desired_extension
 
 
-	def GetDownloadOptions(self, formats, title):
+	def GetDownloadOptions(self, formats, title, audioPublicID):
 		options = {}
 
 		diff = 10000
 		closest_height = 0
 		extension = ""
 
-		filename = title
+		filename = title + "_" + audioPublicID
 
 		for f in formats:
 			if 'height' in f:
@@ -38,12 +38,12 @@ class YTDownloader:
 		filename += f".{extension}"
 		options = {
 						"format" : f"{extension}[height={closest_height}]",
-						"outtmpl": f'{self.YT_dir}/%(title)s.%(ext)s'
+						"outtmpl": f'{self.YT_dir}/%(title)s_{audioPublicID}.%(ext)s'
 				  }
 
 		return options, os.path.join(self.YT_dir, filename)
 
-	def DownloadVideo(self, url):
+	def DownloadVideo(self, url, audioPublicID):
 		ydl_opts = {}
 		ydl = youtube_dl.YoutubeDL(ydl_opts)
 
@@ -53,7 +53,7 @@ class YTDownloader:
 
 		formats = info_dict.get('formats',None)
 
-		ydl_opts, filepath = self.GetDownloadOptions(formats, title)
+		ydl_opts, filepath = self.GetDownloadOptions(formats, title, audioPublicID)
 
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 			ydl.download([url])
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 	url = "https://www.youtube.com/watch?v=vJ6T7bV6Zo0"
 
 	yt_down = YTDownloader("YOUTUBE_FILES", desired_height = 720)
-	filepath = yt_down.DownloadVideo(url)
+	filepath = yt_down.DownloadVideo(url, "32123123")
 
 	print(filepath)
 

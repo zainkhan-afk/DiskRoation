@@ -62,7 +62,7 @@ class YTDownloader:
 
 
 if __name__ == "__main__":
-	url = "https://www.youtube.com/watch?v=vJ6T7bV6Zo0"
+	url = "https://www.youtube.com/watch?v=2n8J80SQmO4"
 
 	yt_down = YTDownloader("YOUTUBE_FILES", desired_height = 720)
 	filepath = yt_down.DownloadVideo(url, "32123123")

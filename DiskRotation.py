@@ -284,6 +284,7 @@ class DiskRotation:
 
 	def CreateVideoFrames(self, video_time, use_watermark = True, background_mode = 0, background_image_data = None, disk_image_data = None,  temp_video_filename = "video_temp.avi"):
 		self.use_watermark = use_watermark
+		every_nth_frame = 1
 		total_frames = None
 		bg_video_cap = None
 
@@ -322,6 +323,13 @@ class DiskRotation:
 		elif background_mode == "video":
 			bg_video_cap = cv2.VideoCapture(background_image_data)
 			total_frames = bg_video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+			bg_vid_fps = bg_video_cap.get(cv2.CAP_PROP_FPS)
+
+			if bg_vid_fps > self.fps:
+				every_nth_frame = bg_vid_fps / self.fps
+
+
+			# print("FPS", bg_vid_fps, "every_nth_frame", every_nth_frame)
 
 
 		disk_image = cv2.imread(disk_image_data)
@@ -345,17 +353,22 @@ class DiskRotation:
 
 		bg_img_idx = 0
 		t = 0
+		bg_frame_ctr = -1
 		for i in range(num_frames):
 			# if i % 1000 == 0:
 			# 	print(f"{i} / {num_frames} completed")
 			# self.Clear()
-
-
 			if background_mode == "video":
-				ret, bg_image = bg_video_cap.read()
-				if not ret:
-					bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+				while bg_frame_ctr != int(i * every_nth_frame):
 					ret, bg_image = bg_video_cap.read()
+					
+					if not ret:
+						bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+						ret, bg_image = bg_video_cap.read()
+					
+					bg_frame_ctr += 1
+				
+				
 				bg_image = self.ResizeTo(bg_image, target_height = self.height)
 				# print(bg_image.shape, self.frame.shape, self.height)
 				# cv2.imshow("bg_image", bg_image)
@@ -363,6 +376,7 @@ class DiskRotation:
 					bg_image = self.DrawWatermark(bg_image, "bg")
 
 				bg_image = cv2.bitwise_and(bg_image, bg_image, mask = self.disk_mask_inv)
+
 
 
 			self.frame = self.DrawDisk(disk_image, bg_image, t)
@@ -388,8 +402,8 @@ if __name__ == "__main__":
 	if background_mode == "image":
 		background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg"
 	if background_mode == "video":	
-		background_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG_Vid.mp4"
-		# background_image_data = "C:/Users/zain/Downloads/What to expect if you encounter a wolf.mp4"
+		background_image_data = "YOUTUBE_FILES/20 Fingers feat. Gillette - Short Short Man (MM 1995) (HD Remastered)_32123123.mp4"
+		background_image_data = "C:/Users/zain/Downloads/What to expect if you encounter a wolf.mp4"
 	else:
 		background_image_data = '#ff0000'
 		background_image_data = (0, 255, 0)

@@ -67,7 +67,7 @@ def MakeVideo():
     audio_file_url = RDH.DownloadData(audio_file_url, FILES_DIR)
 
     background_mode = data["backgroundType"]
-    
+    bg_video_start_time = 0
     if background_mode == "color":
         background_image_data = data["background"].lstrip('#')
         color = tuple(int(background_image_data[i:i+2], 16) for i in (0, 2, 4))
@@ -83,7 +83,13 @@ def MakeVideo():
     
     elif background_mode == "youtube":
         background_image_data = data["background"]
+        
+        if 't=' in background_image_data:
+            bg_video_start_time = int(background_image_data.split('t=')[-1])
+        
         background_image_data = YT_down.DownloadVideo(background_image_data, data["publicID"]["audio"].replace("/", "_").replace("\\", "_"))
+
+
         YT_bg_mode = True
         background_mode = "video"
 
@@ -97,7 +103,7 @@ def MakeVideo():
     video_time = sound_data.shape[0] / fs
 
 
-    DR.CreateVideoFrames(video_time, use_watermark = watermark, background_mode = background_mode, background_image_data = background_image_data, 
+    DR.CreateVideoFrames(video_time, bg_video_start_time, use_watermark = watermark, background_mode = background_mode, background_image_data = background_image_data, 
                         disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
     vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name)
 

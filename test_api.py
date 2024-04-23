@@ -95,7 +95,7 @@ def TestAPI():
 		data = {
 		"audio_file_url": res_audio["secure_url"],
 		"backgroundType": 'youtube',
-		"background": 'https://www.youtube.com/watch?v=HVtE2rcJ5yk&ab_channel=MATECA',
+		"background": 'https://www.youtube.com/watch?v=HVtE2rcJ5yk&ab_channel=MATECA&t=50',
 		"disk_image_url" : res_disk["secure_url"],
 		"watermark" : True,
 		"publicID":{
@@ -138,8 +138,8 @@ def TestAPI():
 # }
 
 
-	url = "http://3.96.10.95:5100/generate_video"
-	# url = "http://127.0.0.1:5100/generate_video"
+	# url = "http://3.96.10.95:5100/generate_video"
+	url = "http://127.0.0.1:5100/generate_video"
 
 	print("Sending Request")
 	resp = requests.get(url, json=data)

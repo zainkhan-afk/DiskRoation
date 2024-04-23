@@ -282,7 +282,7 @@ class DiskRotation:
 		self.frame = np.zeros((self.height, self.width, 3))
 		# self.frame.fill(0)
 
-	def CreateVideoFrames(self, video_time, use_watermark = True, background_mode = 0, background_image_data = None, disk_image_data = None,  temp_video_filename = "video_temp.avi"):
+	def CreateVideoFrames(self, video_time, bg_video_start_time, use_watermark = True, background_mode = 0, background_image_data = None, disk_image_data = None,  temp_video_filename = "video_temp.avi"):
 		self.use_watermark = use_watermark
 		every_nth_frame = 1
 		total_frames = None
@@ -354,6 +354,7 @@ class DiskRotation:
 		bg_img_idx = 0
 		t = 0
 		bg_frame_ctr = -1
+		bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, bg_video_start_time*bg_vid_fps)
 		for i in range(num_frames):
 			# if i % 1000 == 0:
 			# 	print(f"{i} / {num_frames} completed")
@@ -363,7 +364,7 @@ class DiskRotation:
 					ret, bg_image = bg_video_cap.read()
 					
 					if not ret:
-						bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+						bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, bg_video_start_time*bg_vid_fps)
 						ret, bg_image = bg_video_cap.read()
 					
 					bg_frame_ctr += 1

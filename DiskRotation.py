@@ -324,6 +324,7 @@ class DiskRotation:
 			bg_video_cap = cv2.VideoCapture(background_image_data)
 			total_frames = bg_video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
 			bg_vid_fps = bg_video_cap.get(cv2.CAP_PROP_FPS)
+			bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, bg_video_start_time*bg_vid_fps)
 
 			if bg_vid_fps > self.fps:
 				every_nth_frame = bg_vid_fps / self.fps
@@ -354,7 +355,7 @@ class DiskRotation:
 		bg_img_idx = 0
 		t = 0
 		bg_frame_ctr = -1
-		bg_video_cap.set(cv2.CAP_PROP_POS_FRAMES, bg_video_start_time*bg_vid_fps)
+		
 		for i in range(num_frames):
 			# if i % 1000 == 0:
 			# 	print(f"{i} / {num_frames} completed")

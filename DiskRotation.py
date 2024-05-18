@@ -282,8 +282,9 @@ class DiskRotation:
 		self.frame = np.zeros((self.height, self.width, 3))
 		# self.frame.fill(0)
 
-	def CreateVideoFrames(self, video_time, bg_video_start_time, use_watermark = True, background_mode = 0, background_image_data = None, disk_image_data = None,  temp_video_filename = "video_temp.avi"):
+	def CreateVideoFrames(self, video_time, bg_video_start_time, is_member, use_watermark = True, background_mode = 0, background_image_data = None, disk_image_data = None,  temp_video_filename = "video_temp.avi"):
 		self.use_watermark = use_watermark
+		self.is_member = is_member
 		every_nth_frame = 1
 		total_frames = None
 		bg_video_cap = None
@@ -339,7 +340,7 @@ class DiskRotation:
 
 		disk_image = self.PadImage(disk_image, (self.width, self.height))
 
-		if self.use_watermark:
+		if self.use_watermark and not self.is_member:
 			disk_image = self.DrawWatermark(disk_image, "disk")
 
 

@@ -50,6 +50,8 @@ def MakeVideo():
     temp_video_filename =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "_temp_video.mp4")
     output_video_name =  os.path.join(FILES_DIR, data["publicID"]["audio"].replace("/", "_").replace("\\", "_") + "video.mp4")
 
+    is_member = data["ismember"]
+
 
     dims = data["dimension"]
 
@@ -103,7 +105,8 @@ def MakeVideo():
     video_time = sound_data.shape[0] / fs
 
 
-    DR.CreateVideoFrames(video_time, bg_video_start_time, use_watermark = watermark, background_mode = background_mode, background_image_data = background_image_data, 
+    DR.CreateVideoFrames(video_time, bg_video_start_time, is_member, use_watermark = watermark, 
+                        background_mode = background_mode, background_image_data = background_image_data, 
                         disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
     vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name)
 

@@ -108,7 +108,7 @@ def MakeVideo():
     DR.CreateVideoFrames(video_time, bg_video_start_time, is_member, use_watermark = watermark, 
                         background_mode = background_mode, background_image_data = background_image_data, 
                         disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
-    vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name)
+    vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name, video_time)
 
 
     path = RDH.UploadToCloud(output_video_name, resource_type = "video")

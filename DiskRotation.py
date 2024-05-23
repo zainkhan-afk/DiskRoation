@@ -396,7 +396,7 @@ if __name__ == "__main__":
 
 	background_mode = "video"
 	# audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio_long.mp3"
-	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio.mp3"
+	audio_file_url = "D:/zain_dev/python_dev/rotating_disk/data/audio_long.mp3"
 	disk_image_data = "D:/zain_dev/python_dev/rotating_disk/data/BG.jpeg"
 	temp_video_filename = "../temp.mp4"
 	output_video_name = "../final.mp4"
@@ -416,8 +416,10 @@ if __name__ == "__main__":
 
 	video_time = sound_data.shape[0] / fs
 
+	print("Audio time:", video_time)
+
 	t1 = time.time()
-	DR.CreateVideoFrames(video_time, use_watermark = True, background_mode = background_mode, background_image_data = background_image_data, 
+	DR.CreateVideoFrames(video_time, 0, True, use_watermark = True, background_mode = background_mode, background_image_data = background_image_data, 
 						disk_image_data = disk_image_data, temp_video_filename = temp_video_filename)
 	t2 = time.time()
 
@@ -427,7 +429,7 @@ if __name__ == "__main__":
 	vid_maker = VideoMaker()
 
 	t1 = time.time()
-	vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name)
+	vid_maker.MakeVideo(temp_video_filename, audio_file_url, output_video_name, video_time)
 	t2 = time.time()
 
 	print(f"Total Time taken to combine video with audio: {t2 -t1} s")

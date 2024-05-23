@@ -344,7 +344,7 @@ class DiskRotation:
 			disk_image = self.DrawWatermark(disk_image, "disk")
 
 
-
+		video_time = video_time - 0.5
 		num_frames = int(video_time*self.fps)
 		delta_t = 1 / self.fps
 
